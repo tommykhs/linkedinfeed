@@ -124,6 +124,14 @@ class RSSFeedGenerator:
             fe.description(description_html)
             fe.content(description_html, type="html")
 
+            # Add enclosure tag for first image (for Pabbly/RSS readers)
+            if 'images' in post and post['images'] and len(post['images']) > 0:
+                first_image_url = post['images'][0]
+                # Add enclosure tag with image URL
+                # Type is image/jpeg (LinkedIn typically uses JPEG)
+                # Length is unknown, so use 0 as placeholder
+                fe.enclosure(url=first_image_url, length='0', type='image/jpeg')
+
             # Set published date - convert to Hong Kong timezone (UTC+8)
             try:
                 pub_date = date_parser.parse(post['published'])
