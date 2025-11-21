@@ -413,7 +413,23 @@ class LinkedInScraper:
                     # Incremental run: may need more scrolls to find target
                     max_scrolls = 20
 
+                # Track previous height to detect when no more content loads
+                previous_height = 0
+                no_change_count = 0
+
                 for i in range(max_scrolls):
+                    current_height = page.evaluate("document.body.scrollHeight")
+
+                    # If height hasn't changed for 2 scrolls, likely no more posts
+                    if current_height == previous_height:
+                        no_change_count += 1
+                        if no_change_count >= 2:
+                            print(f"  📜 No more posts to load (stopped at scroll {i+1})")
+                            break
+                    else:
+                        no_change_count = 0
+
+                    previous_height = current_height
                     page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
                     time.sleep(2.5)  # Wait for content to load
                     if (i + 1) % 2 == 0:

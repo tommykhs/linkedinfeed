@@ -9,15 +9,10 @@ on:
   workflow_dispatch:
     inputs:
       page:
-        description: 'Page to scrape (select specific page or all)'
+        description: 'Page slug to scrape (e.g., master-concept) or "all" for all pages'
         required: false
         default: 'all'
-        type: choice
-        options:
-          - all
-          - master-concept
-          - digital-action-lab
-          - finda-cloud
+        type: string
 
 # Set permissions for GITHUB_TOKEN
 permissions:
