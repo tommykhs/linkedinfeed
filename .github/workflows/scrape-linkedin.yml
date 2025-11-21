@@ -18,6 +18,10 @@ on:
           - master-concept
           - digital-action-lab
 
+# Set permissions for GITHUB_TOKEN
+permissions:
+  contents: write  # Allow pushing to repository
+
 jobs:
   scrape-and-deploy:
     runs-on: ubuntu-latest
