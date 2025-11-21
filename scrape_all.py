@@ -5,9 +5,42 @@ Reads pages from pages_config.json and scrapes them sequentially
 """
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
+
+
+def extract_slug_from_url(url):
+    """Extract slug from LinkedIn URL"""
+    patterns = [
+        r'/company/([^/]+)',
+        r'/showcase/([^/]+)'
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, url)
+        if match:
+            return match.group(1)
+    return 'linkedin-feed'
+
+
+def normalize_url(url):
+    """
+    Normalize LinkedIn URL to ensure it has the posts page with proper parameters
+
+    Examples:
+        https://www.linkedin.com/company/master-concept/
+        -> https://www.linkedin.com/company/master-concept/posts/?feedView=all&sortBy=recent&viewAsMember=true
+    """
+    # Remove trailing slash
+    url = url.rstrip('/')
+
+    # If already has posts/ in it, return as is
+    if '/posts' in url:
+        return url
+
+    # Add posts page with parameters
+    return f"{url}/posts/?feedView=all&sortBy=recent&viewAsMember=true"
 
 
 def scrape_all_pages(specific_page=None):
@@ -27,14 +60,25 @@ def scrape_all_pages(specific_page=None):
     with open(config_file) as f:
         config = json.load(f)
 
-    pages = config['pages']
+    # Process pages: extract slug and normalize URL
+    pages = []
+    for page in config['pages']:
+        url = page['url']
+        slug = extract_slug_from_url(url)
+        normalized_url = normalize_url(url)
+        pages.append({
+            'url': normalized_url,
+            'slug': slug,
+            'original_url': url
+        })
 
     # Filter to specific page if requested
     if specific_page and specific_page != 'all':
         pages = [p for p in pages if p['slug'] == specific_page]
         if not pages:
             print(f"❌ Page '{specific_page}' not found in config")
-            print(f"   Available pages: {', '.join([p['slug'] for p in config['pages']])}")
+            all_slugs = [extract_slug_from_url(p['url']) for p in config['pages']]
+            print(f"   Available pages: {', '.join(all_slugs)}")
             sys.exit(1)
 
     print("=" * 60)
@@ -46,7 +90,8 @@ def scrape_all_pages(specific_page=None):
     failed_pages = []
 
     for i, page in enumerate(pages, 1):
-        print(f"[{i}/{len(pages)}] 📄 {page['name']} ({page['slug']})")
+        print(f"[{i}/{len(pages)}] 📄 {page['slug']}")
+        print(f"  URL: {page['original_url']}")
         print("-" * 60)
 
         # Run scraper

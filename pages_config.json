@@ -1,19 +1,13 @@
 {
   "pages": [
     {
-      "slug": "master-concept",
-      "url": "https://www.linkedin.com/company/master-concept/posts/?feedView=all&sortBy=recent&viewAsMember=true",
-      "name": "Master Concept"
+      "url": "https://www.linkedin.com/company/master-concept/"
     },
     {
-      "slug": "digital-action-lab",
-      "url": "https://www.linkedin.com/showcase/digital-action-lab/posts/?feedView=all&sortBy=recent&viewAsMember=true",
-      "name": "Digital Action Lab"
+      "url": "https://www.linkedin.com/showcase/digital-action-lab/"
     },
     {
-      "slug": "finda-cloud",
-      "url": "https://www.linkedin.com/company/finda-cloud/posts/?feedView=all&sortBy=recent&viewAsMember=true",
-      "name": "Finda Cloud"
+      "url": "https://www.linkedin.com/company/finda-cloud/"
     }
   ]
 }
