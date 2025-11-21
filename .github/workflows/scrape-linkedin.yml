@@ -9,14 +9,15 @@ on:
   workflow_dispatch:
     inputs:
       page:
-        description: 'Page to scrape (master-concept, digital-action-lab, or both)'
+        description: 'Page to scrape (select specific page or all)'
         required: false
-        default: 'both'
+        default: 'all'
         type: choice
         options:
-          - both
+          - all
           - master-concept
           - digital-action-lab
+          - finda-cloud
 
 # Set permissions for GITHUB_TOKEN
 permissions:
@@ -61,7 +62,7 @@ jobs:
           fi
 
       - name: Scrape Master Concept
-        if: github.event.inputs.page == 'both' || github.event.inputs.page == 'master-concept' || github.event_name == 'schedule'
+        if: github.event.inputs.page == 'all' || github.event.inputs.page == 'master-concept' || github.event_name == 'schedule'
         env:
           HEADLESS: 'true'
         run: |
@@ -69,12 +70,20 @@ jobs:
           python generate_rss.py master-concept
 
       - name: Scrape Digital Action Lab
-        if: github.event.inputs.page == 'both' || github.event.inputs.page == 'digital-action-lab' || github.event_name == 'schedule'
+        if: github.event.inputs.page == 'all' || github.event.inputs.page == 'digital-action-lab' || github.event_name == 'schedule'
         env:
           HEADLESS: 'true'
         run: |
           python linkedin_scraper.py "https://www.linkedin.com/showcase/digital-action-lab/posts/?feedView=all&sortBy=recent&viewAsMember=true"
           python generate_rss.py digital-action-lab
+
+      - name: Scrape Finda Cloud
+        if: github.event.inputs.page == 'all' || github.event.inputs.page == 'finda-cloud' || github.event_name == 'schedule'
+        env:
+          HEADLESS: 'true'
+        run: |
+          python linkedin_scraper.py "https://www.linkedin.com/company/finda-cloud/posts/?feedView=all&sortBy=recent&viewAsMember=true"
+          python generate_rss.py finda-cloud
 
       - name: Encrypt and save session
         if: always()
