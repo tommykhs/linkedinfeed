@@ -61,29 +61,17 @@ jobs:
             echo "⚠️  No encrypted session found - first run will require login"
           fi
 
-      - name: Scrape Master Concept
-        if: github.event.inputs.page == 'all' || github.event.inputs.page == 'master-concept' || github.event_name == 'schedule'
+      - name: Scrape All Pages
+        if: github.event.inputs.page == 'all' || github.event_name == 'schedule'
         env:
           HEADLESS: 'true'
-        run: |
-          python linkedin_scraper.py "https://www.linkedin.com/company/master-concept/posts/?feedView=all&sortBy=recent&viewAsMember=true"
-          python generate_rss.py master-concept
+        run: python scrape_all.py all
 
-      - name: Scrape Digital Action Lab
-        if: github.event.inputs.page == 'all' || github.event.inputs.page == 'digital-action-lab' || github.event_name == 'schedule'
+      - name: Scrape Specific Page
+        if: github.event.inputs.page != 'all' && github.event.inputs.page != ''
         env:
           HEADLESS: 'true'
-        run: |
-          python linkedin_scraper.py "https://www.linkedin.com/showcase/digital-action-lab/posts/?feedView=all&sortBy=recent&viewAsMember=true"
-          python generate_rss.py digital-action-lab
-
-      - name: Scrape Finda Cloud
-        if: github.event.inputs.page == 'all' || github.event.inputs.page == 'finda-cloud' || github.event_name == 'schedule'
-        env:
-          HEADLESS: 'true'
-        run: |
-          python linkedin_scraper.py "https://www.linkedin.com/company/finda-cloud/posts/?feedView=all&sortBy=recent&viewAsMember=true"
-          python generate_rss.py finda-cloud
+        run: python scrape_all.py ${{ github.event.inputs.page }}
 
       - name: Encrypt and save session
         if: always()
