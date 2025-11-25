@@ -18,8 +18,8 @@
     }
   ],
   "schedule": {
-    "enabled": false,
-    "cron": "0 2,6 * * *",
-    "description": "10 AM and 2 PM HKT (2 AM and 6 AM UTC)"
+    "enabled": true,
+    "cron": "0 2,7 * * *",
+    "description": "10 AM and 3 PM HKT (2 AM and 7 AM UTC)"
   }
 }
