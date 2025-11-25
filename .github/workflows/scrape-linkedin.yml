@@ -1,9 +1,9 @@
 name: Scrape LinkedIn Feeds
 
 on:
-  # Schedule: Run at 10 AM and 2 PM HKT (2 AM and 6 AM UTC)
+  # Schedule: Run at 10 AM and 3 PM HKT (2 AM and 7 AM UTC)
   schedule:
-    - cron: '0 2,6 * * *'  # 10 AM and 2 PM HKT
+    - cron: '0 2,7 * * *'  # 10 AM and 3 PM HKT
 
   # Allow manual trigger
   workflow_dispatch:
